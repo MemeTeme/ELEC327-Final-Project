@@ -43,10 +43,10 @@ void main(void) {
     	TA0CCR1 = 0;
     	TA0CCTL1 = OUTMOD_6;
     	WDTCTL = WDT_MDLY_8; //watchdog interrupt every 8 ms
-		IE1 |= WDTIE; // ENable Watchdog Tiemr interrupt
-		lcdSetText("No Alarm Set.", 0,0);
-		alarm_state = 0;
-		_bis_SR_register(LPM0_bits+GIE);
+	IE1 |= WDTIE; // ENable Watchdog Tiemr interrupt
+	lcdSetText("No Alarm Set.", 0,0);
+	alarm_state = 0;
+	_bis_SR_register(LPM0_bits+GIE);
 
 }
 
@@ -119,9 +119,9 @@ void serialInit()
 	UCA0CTL1|= UCSSEL_2; // SMCLK
 	UCA0BR0=104; // BAUDRATE AT 1 MHz 9600
 	UCA0BR1=0;//1MHz 9600
-    UCA0MCTL= UCBRS_1; // MODULATION UCBRSx=1
-    UCA0CTL1 &=  ~UCSWRST; // ** INITIALIZE USCI STATE MACHINE
-    IE2 |= UCA0RXIE; // Enable RX interrupt
+    	UCA0MCTL= UCBRS_1; // MODULATION UCBRSx=1
+    	UCA0CTL1 &=  ~UCSWRST; // ** INITIALIZE USCI STATE MACHINE
+    	IE2 |= UCA0RXIE; // Enable RX interrupt
 }
 
 void serialWrite(unsigned char c)
@@ -130,6 +130,7 @@ void serialWrite(unsigned char c)
 	UCA0TXBUF=c; // TX
 }
 
+//Function for facilitating switch debouncing
 int debounceSwitch(void)
 {
 	int i;
@@ -143,6 +144,7 @@ int debounceSwitch(void)
 	return debouncedState;
 }
 
+//Function for facilitating switch debouncing
 int rawPortData(void)
 {
 	int portState = ~P1IN & 0xA0;
