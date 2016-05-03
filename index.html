@@ -21,11 +21,16 @@
 <a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Overview</h1>
 
 <center><p>POVAlarmClock-Trailer:</p></center>
-<center><iframe width="560" height="315" src="https://www.youtube.com/embed/TRAILERLINKHERE" frameborder="0" allowfullscreen></iframe></center>
+
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/tscl922ixYs" frameborder="0" allowfullscreen></iframe></center>
+
+<br>
 
 <center><p>POVAlarmClock-VideoReport:</p></center>
 
 <center><iframe width="560" height="315" src="https://www.youtube.com/embed/REPORTLINKHERE" frameborder="0" allowfullscreen></iframe></center>
+
+<br>
 
 <p>We created a clock and alarm system that have two-way bluetooth communication for our final project. The clock looks like an old fashioned clock face, but was created using digital control of LEDs and persistence of vision (POV) which creates a much more interesting clock face display. The alarm system contains buttons with which the user sets the alarm time, and an LCD screen so that the user can view the set alarm time. The alarm system is synchronized with this POV clock, but exists as a separate module; this is possible due to the bluetooth communication between the POV clock and the alarm system. The two components exist separately to increase the usability of this product. Since the POV alarm clock spins rapidly, it’s not practical, safe, nor useful to expect users to set the alarm near the spinning clock face. With the two module design, the user can for example keep the alarm system on his bedside table and set the alarm before going to sleep. This alarm system will communicate via bluetooth to the POV clock located elsewhere in the room, and the alarm will sound with the POV clock reaches the alarm time set by the user.</p>
 
@@ -82,6 +87,8 @@
 
 <h3>
 <a id="spinning-pcb-software" class="anchor" href="#spinning-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spinning PCB Software</h3>
+
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/Master/ELEC327spinMain.c">Spinning PCB COde</a></p></center>
 
 <p>The MSP430 code of the spinning PCB handled the timing of this system. It kept track of the current time, which controlled where the minute/hour hands were on the POV clock as well as when the buzzer on the alarm module sounded. It also kept track of the changing LED patterns that produced the POV clock face.</p>
 
