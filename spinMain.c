@@ -570,8 +570,10 @@ __interrupt void Timer_A (void) {
 		serialWrite('s');
 	}else if(state==5 && rec == 'o'){//if the alarm is going off and an o character is received, the alarm has been turned off
 		state = 0;
+	}else if(state ==5 && rec == 'S'){ // if the alarm is set but has not started going off, and needs to be reset
+		alarm = alarm_time('1','2','0','0');
+		state =0;
 	}
-
 	IFG2 &= ~UCA0RXIFG; // Clear RX flag
 }
 
