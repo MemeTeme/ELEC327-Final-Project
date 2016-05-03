@@ -26,9 +26,15 @@
 
 <br>
 
+<center><p>POVAlarmClock-Demonstration:</p></center>
+
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/4eS3IonUTLU" frameborder="0" allowfullscreen></iframe></center>
+
+<br>
+
 <center><p>POVAlarmClock-VideoReport:</p></center>
 
-<center><iframe width="560" height="315" src="https://www.youtube.com/embed/REPORTLINKHERE" frameborder="0" allowfullscreen></iframe></center>
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/qibtlYjgRG4" frameborder="0" allowfullscreen></iframe></center>
 
 <br>
 
@@ -88,7 +94,7 @@
 <h3>
 <a id="spinning-pcb-software" class="anchor" href="#spinning-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spinning PCB Software</h3>
 
-<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/Master/ELEC327spinMain.c">Spinning PCB COde</a></p></center>
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/Master/spinMain.c">Spinning PCB COde</a></p></center>
 
 <p>The MSP430 code of the spinning PCB handled the timing of this system. It kept track of the current time, which controlled where the minute/hour hands were on the POV clock as well as when the buzzer on the alarm module sounded. It also kept track of the changing LED patterns that produced the POV clock face.</p>
 
@@ -100,6 +106,8 @@
 
 <h3>
 <a id="alarm-pcb-software" class="anchor" href="#alarm-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alarm PCB Software</h3>
+
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/Master/alarmMain.c">Spinning PCB COde</a></p></center>
 
 <p>Upon starting up, the LCD screen will display a message saying, “No Alarm Is Set”. It then stays in this state until the user presses any one of the three buttons on the PCB. Once that happens, the LCD screen will display, “0000 Set Hour.” Repeatedly pressing the first button (button furthest to the left when the buttons are closest to you) will increment the hour count to “0100”, “0200”, ... , “2200”, “2300”. The alarm is set in military time. Pressing the third button sets the hour and the LCD display will then read, “ xx00 Set Minute.” The user can then repeatedly press the second button to increment the minutes, and press the third button to finalize the selection. The LCD will then read, “Alarm is set for xxxx”. </p>
 
