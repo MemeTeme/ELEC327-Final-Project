@@ -94,7 +94,7 @@
 <h3>
 <a id="spinning-pcb-software" class="anchor" href="#spinning-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spinning PCB Software</h3>
 
-<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/Master/spinMain.c">Spinning PCB COde</a></p></center>
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/master/spinMain.c">Spinning PCB Code</a></p></center>
 
 <p>The MSP430 code of the spinning PCB handled the timing of this system. It kept track of the current time, which controlled where the minute/hour hands were on the POV clock as well as when the buzzer on the alarm module sounded. It also kept track of the changing LED patterns that produced the POV clock face.</p>
 
@@ -107,7 +107,11 @@
 <h3>
 <a id="alarm-pcb-software" class="anchor" href="#alarm-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alarm PCB Software</h3>
 
-<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/Master/alarmMain.c">Spinning PCB COde</a></p></center>
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/mster/alarmMain.c">Alarm PCB Code</a></p></center>
+
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/mster/lcdLib.h">LCD Header File</a></p></center>
+
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/mster/lcdLib.c">LCD Interface Library</a></p></center>
 
 <p>Upon starting up, the LCD screen will display a message saying, “No Alarm Is Set”. It then stays in this state until the user presses any one of the three buttons on the PCB. Once that happens, the LCD screen will display, “0000 Set Hour.” Repeatedly pressing the first button (button furthest to the left when the buttons are closest to you) will increment the hour count to “0100”, “0200”, ... , “2200”, “2300”. The alarm is set in military time. Pressing the third button sets the hour and the LCD display will then read, “ xx00 Set Minute.” The user can then repeatedly press the second button to increment the minutes, and press the third button to finalize the selection. The LCD will then read, “Alarm is set for xxxx”. </p>
 
@@ -117,6 +121,8 @@
 
 <h3>
 <a id="bluetooth-software" class="anchor" href="#bluetooth-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth Software</h3>
+
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/master/BluetoothAppendix.html">Spinning PCB Code</a></p></center>
 
 <p>There were two software components involved with the use of bluetooth communication in our project. First off, we needed to program the bluetooth modules we purchased so that they would reliably connect with each other and function as expected once connected. To accomplish this, we connected the bluetooth PCBs to a computer via a USB to TTL serial converter, booted the PCBs in AT programming mode (see hardware section above) and sent the required commands to the PCBs via a serial console (see appendix A). Once the HC-05 modules were programmed, they automatically formed a connection upon boot, and data transmitted via the TXD line of one automatically appeared on the RXD line of the other. We chose to create a serial connection with a baud rate of 9600, 1 stop bit, and 0 parity bits. </p>
 
@@ -135,6 +141,11 @@
 <a id="final-product-and-conclusions" class="anchor" href="#final-product-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Final Product and Conclusions</h3>
 
 <p>This project has two PCBs that work in conjunction via bluetooth. The PCB that is mounted on the fan spins and creates the image of the clock with SPI LED’s that turn on and off at the right times to create the image of an old fashioned clock face. The bluetooth module transmits information about the alarm time between both boards, with the alarm module sending the set alarm time to the spinning PCB, and the spinning PCB sending a flag back whenever the time matches the set alarm time. The stationary PCB creates a very easy user interface for the user to input and see the alarm time that they set. In conclusion, we were able to create a POV clock with wireless communication to an alarm module that sounded at a time manually entered by the user. </p>
+
+<h1>
+<a id="sources" class="anchor" href="#sources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sources</h1>
+
+<center><p><a href="http://www.ece.utep.edu/courses/web3376/Lab_5_-_LCD.html">LCD Code Library Source</a></p></center>
 
 <h1>
 <a id="appendix" class="anchor" href="#appendix" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Appendix</h1>
