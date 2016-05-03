@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Elec327-final-project by MemeTeme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Elec327-final-project</h1>
+      <h2 class="project-tagline">An alarm clock created using persistence of vision</h2>
+      <a href="https://github.com/MemeTeme/ELEC327-Final-Project" class="btn">View on GitHub</a>
+      <a href="https://github.com/MemeTeme/ELEC327-Final-Project/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/MemeTeme/ELEC327-Final-Project/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Overview</h1>
+
+<p><a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE"><img src="https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" alt="SHORT VIDEO"></a></p>
+
+<p><a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE"><img src="https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" alt="LONG VIDEO"></a></p>
+
+<p>We created a clock and alarm system that have two-way bluetooth communication for our final project. The clock looks like an old fashioned clock face, but was created using digital control of LEDs and persistence of vision (POV) which creates a much more interesting clock face display. The alarm system contains buttons with which the user sets the alarm time, and an LCD screen so that the user can view the set alarm time. The alarm system is synchronized with this POV clock, but exists as a separate module; this is possible due to the bluetooth communication between the POV clock and the alarm system. The two components exist separately to increase the usability of this product. Since the POV alarm clock spins rapidly, it’s not practical, safe, nor useful to expect users to set the alarm near the spinning clock face. With the two module design, the user can for example keep the alarm system on his bedside table and set the alarm before going to sleep. This alarm system will communicate via bluetooth to the POV clock located elsewhere in the room, and the alarm will sound with the POV clock reaches the alarm time set by the user.</p>
+
+<p>In order to create this system, we constructed two separate PCB’s: one stationary PCB that the user interacts with to set and view the alarm time as well as sound the buzzer when the POV clock reaches the time set by the alarm, and one rotating PCB with a strip of LED’s that handles the persistence of vision clock face display. The two PCB’s communicate via bluetooth chips that are installed on both PCBs and act as inputs to the two MSP430s.  The stationary PCB sends a desired alarm time to the spinning PCB, and when the clock time hits the desired alarm time, the spinning PCB sends back an alarm ready flag.  </p>
+
+<p>The proceeding sections will first go into detail about persistence of vision and bluetooth communication, then elaborate on the three major parts of this project: the hardware and software implementations of the spinning PCB, the stationary alarm PCB, and the bluetooth modules.  </p>
+
+<h3>
+<a id="persistence-of-vision" class="anchor" href="#persistence-of-vision" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Persistence of Vision</h3>
+
+<p>Persistence of vision (POV) takes advantage of the fact that humans perceive the quick progression of images as motion. This phenomenon is widely utilized, and is why we perceive cinematic movies as live action. POV is a result of the fact that the human visual system can only register about 16 unique scenes per second; once light reaches the retina of the eye, the mind maintains that perception for a little less than a 10th of a second. If many scenes are shown at a faster rate that this, the mind begins to blend the various perceptions together and the discrete images are interpreted as one continuous, though changing, visual scene. This is most likely a result of the fact that the human visual system evolved to interact with the natural world. Very little in the natural world that is perceptible by sight changes in a significant way faster than a tenth of a second. The visual system avoids the burden of having to process hundreds of images every second while still ensuring that the rest of the brain receives the information necessary to safely interact with the surrounding world.</p>
+
+<p>This effect can be transferred to the creation of persistence of vision displays. Persistence of vision displays are not discrete captured images that are displayed in quick progression, but are instead discrete patterns that change and move in quick succession. By changing the pattern of a light source--for example, a string of LEDs--faster than the rate at which the visual system can process each pattern individually as you move that light source through a scene, the mind will naturally link the various discrete patterns together into one cohesive unit. This will result in humans perceiving a single image as opposed to a succession of quickly changing patterns. </p>
+
+<p>This effect is made even stronger when the resulting cohesive unit is recognized by the human, and the individual patterns that composed the image are not recognized. For instance, in drawing the number 6 using persistence of vision (example below), humans are much more familiar with the number 6 than the patterns that make up each “slice” of the POV display of the number 6. </p>
+
+<p>This rapidness with which displays must change in order to create a POV system makes it a perfect project for the MSP430. The MSP430 has clocks and timers that can operate at the speed and accuracy needed to create POV display. The display requires that dozens of LED patterns be displayed quickly enough that this POV phenomenon occurs, and the timing must be consistent such that the clock face always appears the same. </p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6500492/14966460/1d2c1bee-1078-11e6-8c45-0475d494d919.png" alt="POV six"></p>
+
+<h3>
+<a id="bluetooth-communication" class="anchor" href="#bluetooth-communication" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth Communication</h3>
+
+<p>Bluetooth communication is common for short distance wireless communication. It is reliable for these short distances, which is why we chose to use it for this alarm clock system as most users will be in the same room as their clock when setting their alarm (ex: setting your alarm before going to bed.)</p>
+
+<p>Bluetooth utilizes very high frequency communication, sending 1 mW signals modulated between 2402 and 2480 megahertz. This means that the Bluetooth signals do not need a line of sight in order to function, but only have a reach of around 32 feet.This area of the frequency band is unlicensed and thus available for use in small projects such as this. </p>
+
+<p>In order to send signals, Bluetooth utilizes the frequency hopping spread spectrum (FHSS) technique. This method of radio communication uses many frequency channels to send a signal, which “hops” pseudo randomly between these channels; there are 79 channels that the signal can hop to, and it hops about 1,600 times a second. The order of channels that the signal hops through is known to the transmitter and receiver, and is partly why Bluetooth communication is more reliable. If a noise source exists in one of the many channels that the signal is communicated over, the signal is only effected for short time period before it hops to a different channel. Additionally, this spread spectrum technique minimizes the interference that results from any other communication happening in the same frequency range. </p>
+
+<p>Due to the reliability and ease of Bluetooth, many existing hardware modules exist that implement the communication scheme. We purchased a Bluetooth transmitter and receiver that had been created to communicate reliably and effectively, and programmed the alarm communication protocol using the MSP430s connected to the Bluetooth modules. This is explained further below. </p>
+
+<h3>
+<a id="spinning-pcb" class="anchor" href="#spinning-pcb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spinning PCB</h3>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6500492/14966459/1bb136f0-1078-11e6-8ba8-2c5e8ce7892f.png" alt="EAGLE Board Layout"></p>
+
+<p>The spinning PCB consisted of an MSP430, a 4.5V battery pack connection, a strip of 17 SPI LEDs connected in series, and 4 pins on which the bluetooth module sat.  The board used a 4.5V battery to provide adequate power to the MSP430, the LED’s, and the bluetooth module.  The LEDs were controlled using SPI protocol, which enabled us to control all 17 LEDs with only two pins of the MSP430 and to change the LED patterns quickly, as required by POV. Two switches on the board control power to the MSP430 and to the LEDs, so that the system can easily be switched off. All of these components were mounted onto the center of a fan, such that when the fan was turned on the PCB shown above rotated radially around the center of the fan and displayed the analog clock.</p>
+
+<h3>
+<a id="alarm-pcb" class="anchor" href="#alarm-pcb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alarm PCB</h3>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6500492/14966461/1e4fa32e-1078-11e6-8b60-de0465305e39.png" alt="EAGLE Board Layout"></p>
+
+<p>The Alarm PCB consists of the MSP430 board, three buttons, a buzzer, and header pins that connect to external circuitry and components such as the bluetooth module, the Launchpad, and the LCD screen. This PCB is used by the user, who uses the three buttons to set the desired alarm time. This process is facilitated by feedback shown on the LCD screen, which displays different messages depending on what stage of the process the user is in. The bluetooth module connects through pins to the MSP430, and communicates the set alarm time to the POV clock. When the POV clock reaches this set alarm time, the buzzer on this alarm module will sound. </p>
+
+<h3>
+<a id="bluetooth-hardware" class="anchor" href="#bluetooth-hardware" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth Hardware</h3>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6500492/14966464/1f6062a8-1078-11e6-960c-7798c48f9ff6.png" alt="HC-05"></p>
+
+<p>The bluetooth modules we purchased were pre-made PCB’s interfacing with the HC-05 bluetooth module.The HC-05 is a chip which can be programmed to act as either the master or slave in a bluetooth connection. Once two of the modules are connected, they provide a serial interface between the two of them, forming what is, for all our intents and purposes, a wired serial connection between our two PCBs. The HC-05, and specifically the module we purchased, was perfect for our needs for a few reasons. For one, the PCB we bought ignored most of the PINS on the HC-05, only providing interfaces for the power and ground lines and the serial transmit and receive lines. This simplicity made connecting our PCBs via bluetooth as simple as using the built in UART capabilities of the MSP430. Secondly, the HC-05 has a built in antenna, meaning that we didn’t need to worry about purchasing a separate antenna to broadcast the bluetooth signal. Finally, once the initial programming of the HC-05 was completed, creating a connection between the two HC-05 chips was a simple as powering the boards, with no other software or hardware requirements.</p>
+
+<p>The inputs to the HC-05 PCBs were extremely simple. The module runs on anywhere between 3.6 and 6 volts, so we powered the HC-05 chips with the same 4.5 V lines we used for the rest of our hardware. From there, the only required connection was connecting the serial transmit (TXD) and receive (RXD) pins of the HC-05 PCB to the respective opposite UART pins on the MSP430, pins 1.3 and 1.4. After that, all communication between our two MSP430s was accomplished via software. The only exception to this simple I/O scheme was during the initial programming of the two HC-05 modules, which required the key pin (pin 34) of the HC-05 to be pulled high during the powerup of the module. This was accomplished via holding a button on the PCB and connecting the power lines, with the button able to be released when the status LEDs of the PCB began to blink in a two seconds on, two seconds off pattern.</p>
+
+<h3>
+<a id="spinning-pcb-software" class="anchor" href="#spinning-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spinning PCB Software</h3>
+
+<p>The MSP430 code of the spinning PCB handled the timing of this system. It kept track of the current time, which controlled where the minute/hour hands were on the POV clock as well as when the buzzer on the alarm module sounded. It also kept track of the changing LED patterns that produced the POV clock face.</p>
+
+<p>Due to the high number of LED patterns (each of which had to control 17 LEDs) that this MSP430 had to store in memory, memory issues could have been a problem with this device. In order to avoid this, the same array of color values was used for every string of LED patterns. The only component that changed between patterns was the intensity values. For every position of the spinning PCB, only a few intensity values had to change. This drastically reduced the number of values we had to store in memory and thus reduced the memory cost of our code significantly.  </p>
+
+<p>The software was designed such that an analog clock with the following features was displayed as the ray of LEDs rotated: the numbers [3, 6, 9, 12], ticks between the numbers to represent [1, 2, 4, 5, 7, 8, 10, 11], a minute hand, and an hour hand.  To display each individual digit, a sequence of functions was called that each changed which of the LEDs was illuminated for a given position of the LED strip. For example the number 12 utilized a group of 10 functions that lit up the LED strip in 10 consecutive time steps. When the PCB was spinning, this sequence of 10 LED patterns is perceived as the number 12. The code displays the other features of the clock in a similar manner.   </p>
+
+<p>To track time steps, we used Timer A0 clocked of the ACLK divided by 8 (1500 Hz), and had it count up to 3, during which the timer triggers an interrupt which increments a count state variable.  After much calibration, we found that one rotation corresponded to a count value of 54.  Based on these values, a time was calculated, and if this time corresponded to the transmitted alarm time, an alarm flag was sent back to the stationary PCB to sound the alarm buzzer.  </p>
+
+<h3>
+<a id="alarm-pcb-software" class="anchor" href="#alarm-pcb-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alarm PCB Software</h3>
+
+<p>Upon starting up, the LCD screen will display a message saying, “No Alarm Is Set”. It then stays in this state until the user presses any one of the three buttons on the PCB. Once that happens, the LCD screen will display, “0000 Set Hour.” Repeatedly pressing the first button (button furthest to the left when the buttons are closest to you) will increment the hour count to “0100”, “0200”, ... , “2200”, “2300”. The alarm is set in military time. Pressing the third button sets the hour and the LCD display will then read, “ xx00 Set Minute.” The user can then repeatedly press the second button to increment the minutes, and press the third button to finalize the selection. The LCD will then read, “Alarm is set for xxxx”. </p>
+
+<p>The code then uses the bluetooth module to transmit the set alarm time to the rotating PCB by first sending an “r” character, and once the character has been received and acknowledged, it starts sending each integer of the alarm time as a character. For example, if the alarm is set for 03:45, the code will send “0”, then “3”, then “4”, then “5”. On the receiving end, once the alarm time matches the clock time, a flag is sent from the  POV clock to the alarm PCB, and the alarm uses PWM to sound the buzzer.</p>
+
+<p>For additional functionality, the code allows for changing the set alarm time once the alarm has been set. Simply pressing the third button prompts the user to set the hour, then minutes, and results in a new set alarm time. </p>
+
+<h3>
+<a id="bluetooth-software" class="anchor" href="#bluetooth-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth Software</h3>
+
+<p>There were two software components involved with the use of bluetooth communication in our project. First off, we needed to program the bluetooth modules we purchased so that they would reliably connect with each other and function as expected once connected. To accomplish this, we connected the bluetooth PCBs to a computer via a USB to TTL serial converter, booted the PCBs in AT programming mode (see hardware section above) and sent the required commands to the PCBs via a serial console (see appendix A). Once the HC-05 modules were programmed, they automatically formed a connection upon boot, and data transmitted via the TXD line of one automatically appeared on the RXD line of the other. We chose to create a serial connection with a baud rate of 9600, 1 stop bit, and 0 parity bits. </p>
+
+<p>After programming the HC-05 modules, we needed to set up UART communication on the MSP430s. We programmed the MSP430 with the same serial parameters as the bluetooth modules; 9600 baud, 1 stop bit, and 0 parity bits. This meant we could transmit approximately 1 byte per millisecond, which was perfectly fine for our needs. We used a mixture of polling and interrupts for our serial communication. Transmission was accomplished through polling, with each transmitted byte waiting for a flag from the MSP430 before being sent. Reception on the other hand was accomplished via interrupts, meaning that each MSP430 could process other tasks while waiting for a response from the other. Though it might have been slightly more efficient to use interrupts for both transmitting and receiving, the combined process we used was perfectly acceptable for our purposes. With this setup serial communication between the PCBs worked as expected, with the bluetooth modules effectively acting as a wire over which we could transmit data. This allowed our stationary alarm controller PCB to easily communicate with the spinning clock PCB, without having to worry about wiring between moving pieces of our project.</p>
+
+<h3>
+<a id="problems-encountered" class="anchor" href="#problems-encountered" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Problems Encountered</h3>
+
+<p>The two main problems that our group encountered were getting a constant RPM with the fan and getting the transmitter and receiver to work on the bluetooth module. </p>
+
+<p>Since the PCB that creates the POV clock was mounted on a fan, the weight of the PCB and the batteries, along with the low quality of the fan, caused the rotation of the fan to be inconsistent and made it difficult to program our code to have a stable clock when the PCB was spinning. To try and stabilize the fan, we distributed the weight of all the components on the fan and focused as much weight as we could on the center of the fan; any weight that was exactly centered on the fan caused no change in torque and thus didn’t disturb the consistency of the RPM.</p>
+
+<p>Another problem was getting the bluetooth module to perform two way communication. The bluetooth module was able to receive information without any issues, but had trouble with transmission. However, it turned out that this was not actually a problem with the HC-05 modules, but rather a hardware failure on the transmission pin of the MSP430 being used for testing.</p>
+
+<h3>
+<a id="final-product-and-conclusions" class="anchor" href="#final-product-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Final Product and Conclusions</h3>
+
+<p>This project has two PCBs that work in conjunction via bluetooth. The PCB that is mounted on the fan spins and creates the image of the clock with SPI LED’s that turn on and off at the right times to create the image of an old fashioned clock face. The bluetooth module transmits information about the alarm time between both boards, with the alarm module sending the set alarm time to the spinning PCB, and the spinning PCB sending a flag back whenever the time matches the set alarm time. The stationary PCB creates a very easy user interface for the user to input and see the alarm time that they set. In conclusion, we were able to create a POV clock with wireless communication to an alarm module that sounded at a time manually entered by the user. </p>
+
+<h1>
+<a id="appendix" class="anchor" href="#appendix" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Appendix</h1>
+
+<h2>
+<a id="at-commands-for-programming-the-hc-05-bluetooth-module" class="anchor" href="#at-commands-for-programming-the-hc-05-bluetooth-module" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AT Commands for Programming the HC-05 Bluetooth Module</h2>
+
+<p>Each transmitted command was followed by a carriage return (\r) and a line feed (\n) character, in order to signify to the HC-05 the end of the command</p>
+
+<h3>
+<a id="commands-sent-to-slave-pcb-and-responses" class="anchor" href="#commands-sent-to-slave-pcb-and-responses" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands sent to slave PCB and responses</h3>
+
+<p>AT                  (check if programming mode has been entered correctly)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+UART=9600,0,0            (set serial to 9600 baud, 1 stop bit, 0 parity bits)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+ROLE=0               (set to slave mode)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+RMAAD                (remove all devices from pairing list)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+ADDR?                (request MAC address)</p>
+
+<pre><code>OK+ADDR=2016:3:75454
+</code></pre>
+
+<p>AT+PSWD=1234            (set PSWD to 1234)</p>
+
+<pre><code>OK
+</code></pre>
+
+<h3>
+<a id="commands-sent-to-master-pcb" class="anchor" href="#commands-sent-to-master-pcb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands sent to master PCB</h3>
+
+<p>AT                  (check to ensure AT mode entered)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+UART=9600,0,0            (set serial to 9600 baud, 1 stop bit, 0 parity bits)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+ROLE=1               (set to master mode)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+RMAAD                (clear all devices from pair list)</p>
+
+<pre><code>OK  
+</code></pre>
+
+<p>AT+CMODE=0          (allow pairing only with bound address)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+PSWD=1234            (set password to 1234)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+BIND=2016,3,75454        (bind to out slave PCB)</p>
+
+<pre><code>OK
+</code></pre>
+
+<p>AT+PAIR=2016,3,75454,10     (pair with our slave PCB with a timeout of 10s)</p>
+
+<pre><code>OK
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/MemeTeme/ELEC327-Final-Project">Elec327-final-project</a> is maintained by <a href="https://github.com/MemeTeme">MemeTeme</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
