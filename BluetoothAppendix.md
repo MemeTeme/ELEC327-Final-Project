@@ -5,9 +5,10 @@ Each transmitted command was followed by a carriage return (\r) and a line feed 
 
 ###Commands sent to slave PCB and responses
 
-AT					(check if programming mode has been entered correctly)
-  
-  OK
+AT					(check if programming mode has been entered correctly)		
+	
+	OK
+	
   
 AT+UART=9600,0,0			(set serial to 9600 baud, 1 stop bit, 0 parity bits)
 
@@ -33,7 +34,7 @@ AT+PSWD=1234			(set PSWD to 1234)
 
 AT					(check to ensure AT mode entered)
   
-  `OK`
+  	OK
 
 AT+UART=9600,0,0			(set serial to 9600 baud, 1 stop bit, 0 parity bits)
 
@@ -41,11 +42,11 @@ AT+UART=9600,0,0			(set serial to 9600 baud, 1 stop bit, 0 parity bits)
 
 AT+ROLE=1				(set to master mode)
 
-  OK
+	OK
   
 AT+RMAAD				(clear all devices from pair list)
 
-  OK	
+	OK	
   
 AT+CMODE=0			(allow pairing only with bound address)
 
