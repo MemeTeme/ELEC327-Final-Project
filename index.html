@@ -80,7 +80,7 @@
 
 <p><img src="https://cloud.githubusercontent.com/assets/6500492/14966461/1e4fa32e-1078-11e6-8b60-de0465305e39.png" alt="EAGLE Board Layout"></p>
 
-<p>The Alarm PCB consists of the MSP430 board, three buttons, a buzzer, and header pins that connect to external circuitry and components such as the bluetooth module, the Launchpad, and the LCD screen. This PCB is used by the user, who uses the three buttons to set the desired alarm time. This process is facilitated by feedback shown on the LCD screen, which displays different messages depending on what stage of the process the user is in. The bluetooth module connects through pins to the MSP430, and communicates the set alarm time to the POV clock. When the POV clock reaches this set alarm time, the buzzer on this alarm module will sound. </p>
+<p>The Alarm PCB consists of the MSP430 board, two buttons, a buzzer, and header pins that connect to external circuitry and components such as the bluetooth module, the Launchpad programming interface, and the LCD screen. This PCB is used by the user, who uses the buttons to set the desired alarm time. This process is facilitated by feedback shown on the LCD screen, which displays different messages depending on what stage of the process the user is in. The bluetooth module connects through pins to the MSP430, and communicates the set alarm time to the POV clock. When the POV clock reaches this set alarm time, the buzzer on this alarm module will soun, and must be stopped by the user pressing a button. </p>
 
 <h3>
 <a id="bluetooth-hardware" class="anchor" href="#bluetooth-hardware" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth Hardware</h3>
@@ -113,18 +113,18 @@
 
 <center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/master/lcdLib.c">LCD Interface Library</a></p></center>
 
-<p>Upon starting up, the LCD screen will display a message saying, “No Alarm Is Set”. It then stays in this state until the user presses any one of the three buttons on the PCB. Once that happens, the LCD screen will display, “0000 Set Hour.” Repeatedly pressing the first button (button furthest to the left when the buttons are closest to you) will increment the hour count to “0100”, “0200”, ... , “2200”, “2300”. The alarm is set in military time. Pressing the third button sets the hour and the LCD display will then read, “ xx00 Set Minute.” The user can then repeatedly press the second button to increment the minutes, and press the third button to finalize the selection. The LCD will then read, “Alarm is set for xxxx”. </p>
+<p>Upon starting up, the LCD screen will display a message saying, “No Alarm Set”. It then stays in this state until the user presses the leftmost button on the PCB. Once that happens, the LCD screen will display, “Set Hour:” and the current alarm time. Repeatedly pressing the rightmost button will increment the hour count to “0100”, “0200”, ... , “2200”, “2300”. The alarm is set in military time. Pressing the leftmost button locks in the hour and the LCD display will then read, “ Set Minute:” followed by xx:00 The user can then repeatedly press the rightmost button to increment the minutes, and press the first button again to finalize the selection. The LCD will then read, “ALARM SET: xx:xx”. </p>
 
 <p>The code then uses the bluetooth module to transmit the set alarm time to the rotating PCB by first sending an “r” character, and once the character has been received and acknowledged, it starts sending each integer of the alarm time as a character. For example, if the alarm is set for 03:45, the code will send “0”, then “3”, then “4”, then “5”. On the receiving end, once the alarm time matches the clock time, a flag is sent from the  POV clock to the alarm PCB, and the alarm uses PWM to sound the buzzer.</p>
 
-<p>For additional functionality, the code allows for changing the set alarm time once the alarm has been set. Simply pressing the third button prompts the user to set the hour, then minutes, and results in a new set alarm time. </p>
+<p>For additional functionality, the code allows for changing the set alarm time once the alarm has been set. Simply pressing the first prompts the user to set the hour, then minutes, and results in a new set alarm time. </p>
 
 <h3>
 <a id="bluetooth-software" class="anchor" href="#bluetooth-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth Software</h3>
 
-<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/master/BluetoothAppendix.html">Spinning PCB Code</a></p></center>
+<center><p><a href="https://github.com/MemeTeme/ELEC327-Final-Project/blob/master/BluetoothAppendix.md">Bluetooth Module Programming Protocol</a></p></center>
 
-<p>There were two software components involved with the use of bluetooth communication in our project. First off, we needed to program the bluetooth modules we purchased so that they would reliably connect with each other and function as expected once connected. To accomplish this, we connected the bluetooth PCBs to a computer via a USB to TTL serial converter, booted the PCBs in AT programming mode (see hardware section above) and sent the required commands to the PCBs via a serial console (see appendix A). Once the HC-05 modules were programmed, they automatically formed a connection upon boot, and data transmitted via the TXD line of one automatically appeared on the RXD line of the other. We chose to create a serial connection with a baud rate of 9600, 1 stop bit, and 0 parity bits. </p>
+<p>There were two software components involved with the use of bluetooth communication in our project. First off, we needed to program the bluetooth modules we purchased so that they would reliably connect with each other and function as expected once connected. To accomplish this, we connected the bluetooth PCBs to a computer via a USB to TTL serial converter, booted the PCBs in AT programming mode (see hardware section above) and sent the required commands to the PCBs via a serial console (see appendix above). Once the HC-05 modules were programmed, they automatically formed a connection upon boot, and data transmitted via the TXD line of one automatically appeared on the RXD line of the other. We chose to create a serial connection with a baud rate of 9600, 1 stop bit, and 0 parity bits. </p>
 
 <p>After programming the HC-05 modules, we needed to set up UART communication on the MSP430s. We programmed the MSP430 with the same serial parameters as the bluetooth modules; 9600 baud, 1 stop bit, and 0 parity bits. This meant we could transmit approximately 1 byte per millisecond, which was perfectly fine for our needs. We used a mixture of polling and interrupts for our serial communication. Transmission was accomplished through polling, with each transmitted byte waiting for a flag from the MSP430 before being sent. Reception on the other hand was accomplished via interrupts, meaning that each MSP430 could process other tasks while waiting for a response from the other. Though it might have been slightly more efficient to use interrupts for both transmitting and receiving, the combined process we used was perfectly acceptable for our purposes. With this setup serial communication between the PCBs worked as expected, with the bluetooth modules effectively acting as a wire over which we could transmit data. This allowed our stationary alarm controller PCB to easily communicate with the spinning clock PCB, without having to worry about wiring between moving pieces of our project.</p>
 
@@ -147,89 +147,6 @@
 
 <center><p><a href="http://www.ece.utep.edu/courses/web3376/Lab_5_-_LCD.html">LCD Code Library Source</a></p></center>
 
-<h1>
-<a id="appendix" class="anchor" href="#appendix" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Appendix</h1>
-
-<h2>
-<a id="at-commands-for-programming-the-hc-05-bluetooth-module" class="anchor" href="#at-commands-for-programming-the-hc-05-bluetooth-module" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AT Commands for Programming the HC-05 Bluetooth Module</h2>
-
-<p>Each transmitted command was followed by a carriage return (\r) and a line feed (\n) character, in order to signify to the HC-05 the end of the command</p>
-
-<h3>
-<a id="commands-sent-to-slave-pcb-and-responses" class="anchor" href="#commands-sent-to-slave-pcb-and-responses" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands sent to slave PCB and responses</h3>
-
-<p>AT                  (check if programming mode has been entered correctly)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+UART=9600,0,0            (set serial to 9600 baud, 1 stop bit, 0 parity bits)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+ROLE=0               (set to slave mode)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+RMAAD                (remove all devices from pairing list)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+ADDR?                (request MAC address)</p>
-
-<pre><code>OK+ADDR=2016:3:75454
-</code></pre>
-
-<p>AT+PSWD=1234            (set PSWD to 1234)</p>
-
-<pre><code>OK
-</code></pre>
-
-<h3>
-<a id="commands-sent-to-master-pcb" class="anchor" href="#commands-sent-to-master-pcb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands sent to master PCB</h3>
-
-<p>AT                  (check to ensure AT mode entered)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+UART=9600,0,0            (set serial to 9600 baud, 1 stop bit, 0 parity bits)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+ROLE=1               (set to master mode)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+RMAAD                (clear all devices from pair list)</p>
-
-<pre><code>OK  
-</code></pre>
-
-<p>AT+CMODE=0          (allow pairing only with bound address)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+PSWD=1234            (set password to 1234)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+BIND=2016,3,75454        (bind to out slave PCB)</p>
-
-<pre><code>OK
-</code></pre>
-
-<p>AT+PAIR=2016,3,75454,10     (pair with our slave PCB with a timeout of 10s)</p>
-
-<pre><code>OK
-</code></pre>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/MemeTeme/ELEC327-Final-Project">Elec327-final-project</a> is maintained by <a href="https://github.com/MemeTeme">MemeTeme</a>.</span>
